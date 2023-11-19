@@ -1,4 +1,3 @@
-
 # API - Sistema Escolar de multiplos acessos
 
 ## Description
@@ -30,6 +29,59 @@ Api - Sistema escolar
 - [] CRUD Usuários
 - [] CRUD de Disciplinas, assignando um professor a cada disciplina.
 
+## Levantamento de Classes
+
+### User
+
+- id
+- name
+- email
+- password
+- role
+
+### Student
+
+- extends User
+- enrollmentNumber
+- courses[]
+- Tasks[]
+
+
+### Teacher
+
+- extends User
+- assignedCourses[]
+
+### Admin
+
+- extends User
+
+### Course
+
+- id
+- name
+- teacher
+- students
+- code
+
+### Task
+
+- id
+- quiz
+- status
+- student
+
+### Quiz
+
+- id
+- questions[]
+- course
+
+### Question
+
+- id
+- statement
+- options[]
 
 ## Installation
 
