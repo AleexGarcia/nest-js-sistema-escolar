@@ -1,6 +1,6 @@
 import { Quiz } from "src/quizzes/entities/quiz.entity"
 import { Student } from "src/users/entities/student.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Task {
@@ -10,6 +10,6 @@ export class Task {
     quiz: Quiz
     @Column({default: false})
     status: boolean;
-    @OneToOne(() => Student)
+    @ManyToOne(type=> Student , (student) => student.tasks)
     student: Student;
 }
