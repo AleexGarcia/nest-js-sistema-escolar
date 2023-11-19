@@ -1,5 +1,8 @@
+import { Entity, Column } from "typeorm";
 import { User } from "./user.entity";
 
-export class Admin extends User{
-    
+@Entity()
+export class Admin{
+    @Column(() => User)
+    user: User;
 }
