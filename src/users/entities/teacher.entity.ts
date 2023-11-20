@@ -8,5 +8,5 @@ export class Teacher{
     user: User;
     @OneToMany(type => Course, course => course.teacher)
     assignedCourses: Array<Course>;
-    
+   
 }

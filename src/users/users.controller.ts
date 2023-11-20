@@ -14,23 +14,36 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Get('student')
+  findAllStudent() {
+    return this.usersService.findAllStudent();
+  }
+  @Get('teacher')
+  findAllTeacher() {
+    return this.usersService.findAllTeachers();
+  }
+  @Get('admin')
+  findAllAdmin() {
+    return this.usersService.findAllAdmin();
+  }
+
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get(':role/:id')
+  findOne(@Param('id') id: string , @Param('role') role: string) {
+    return this.usersService.findOne(id, role);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }
