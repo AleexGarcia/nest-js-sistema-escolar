@@ -7,6 +7,7 @@ import { User } from './entities/user.entity';
 import { Student } from './entities/student.entity';
 import { Teacher } from './entities/teacher.entity';
 import { Admin } from './entities/admin.entity';
+import { UserRole } from './enum/user-roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -34,49 +35,66 @@ export class UsersService {
   }
 
   async findAll() {
-
-    const students = await this.findAllStudent()
-    const teachers = await this.findAllTeachers()
-    const admins = await this.findAllAdmin();
-
-    return [].concat(students,teachers,admins);
-    
+    const [students, teachers, admins] = await Promise.all([
+      this.studentRepository.find(),
+      this.teacherRepository.find(),
+      this.adminRepository.find(),
+    ]);
+    const allUsers = [...students, ...teachers, ...admins];
+    return allUsers;
   }
 
-
-  async findAllStudent() {
-    return this.studentRepository.find();
+  findAllByRole(role: UserRole) {
+    return this.selectRepositoryByRole(role).find();
   }
 
-  async findAllTeachers() {
-    return this.teacherRepository.find();
-  }
-
-  async findAllAdmin() {
-    return this.adminRepository.find();
-  }
-
-  findOne(id: string, role: string) {
-    try{
-      return this.selectRepositoryByRole(role).findOne({where:{
+  async findOne(
+    id: string,
+    role: UserRole,
+  ): Promise<Admin | Student | Teacher | null> {
+    return this.selectRepositoryByRole(role).findOne({
+      where: {
         user: {
           id: id,
+        },
+      },
+    });
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const { currentRole, newRole } = updateUserDto;
+    try {
+      const userToUpdate = await this.findOne(id, currentRole);
+      if (!userToUpdate) throw new Error(`Invalid ID | Role`);
+
+      for (const [key, value] of Object.entries(updateUserDto)) {
+        if (value) {
+          if (key === 'newRole') {
+            userToUpdate.user.role = value;
+          } else if (key !== 'currentRole') {
+            userToUpdate.user[key] = value;
+          }
         }
-      }})
-    }catch(error: any){
+      }
+      if (newRole && currentRole !== newRole) {
+        await this.remove(id, currentRole);
+        return await this.createUserWithRole(userToUpdate.user);
+      }
+      return this.saveUserByRole(userToUpdate);
+    } catch (error) {
       console.log(error);
     }
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async remove(id: string, role: UserRole) {
+    return this.selectRepositoryByRole(role).delete({
+      user: {
+        id: id,
+      },
+    });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
-  }
-
-  private createUserWithRole(
+  private async createUserWithRole(
     basicUser: User,
   ): Promise<Student | Teacher | Admin> {
     if (basicUser.role === 'student') {
@@ -91,22 +109,31 @@ export class UsersService {
       const user = new Admin();
       user.user = basicUser;
       return this.adminRepository.save(user);
-    } else {
-      new Error('Invalid Role');
     }
   }
 
-  private selectRepositoryByRole(role: string){
-    switch(role){
-      case 'student':
-        return this.studentRepository;
-      case 'teacher':
-        return this.teacherRepository;
-      case 'admin':
-        return this.adminRepository;
-      default:
-        throw Error('Invalid Role');
+  private selectRepositoryByRole(role: UserRole) {
+    const repositoryMapping = {
+      student: this.studentRepository,
+      teacher: this.teacherRepository,
+      admin: this.adminRepository,
+    };
+    const selectedRepository = repositoryMapping[role];
+
+    if (!selectedRepository) {
+      throw new Error(`Repositório não encontrado para o papel "${role}"`);
     }
+
+    return selectedRepository;
   }
 
+  private async saveUserByRole(userToUpdate: Student | Teacher | Admin) {
+    if (userToUpdate instanceof Student) {
+      return this.studentRepository.save(userToUpdate);
+    } else if (userToUpdate instanceof Teacher) {
+      return this.teacherRepository.save(userToUpdate);
+    } else if (userToUpdate instanceof Admin) {
+      return this.adminRepository.save(userToUpdate);
+    }
+  }
 }
