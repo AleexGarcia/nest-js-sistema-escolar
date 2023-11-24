@@ -13,4 +13,10 @@ export class Question {
   
   @ManyToOne((type) => Quiz, (quiz) => quiz.questions)
   quiz: Quiz;
+
+  constructor(statement:string, options: string[], quiz: Quiz){
+    this.statement = statement;
+    this.options = options;
+    this.quiz = quiz;
+  }
 }

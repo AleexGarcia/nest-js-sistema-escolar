@@ -6,7 +6,7 @@ import { ChildEntity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 @ChildEntity()
 export class Student extends User {
   @ManyToMany((type) => Course, (course) => course.students,{eager: true})
-  @JoinTable()
+  @JoinTable({name: "course_enrollment"})
   courses: Course[];
 
   @OneToMany((type) => Task, (task) => task.student,{eager: true})

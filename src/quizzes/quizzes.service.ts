@@ -22,6 +22,7 @@ export class QuizzesService {
         where: { id: course_id },
       });
       if (course) {
+        
         const parsedDeadlineDate  = new Date(deadlineDate);
         const quiz = new Quiz(name, description, parsedDeadlineDate, course);
         return this.quizRepository.save(quiz);
@@ -34,11 +35,12 @@ export class QuizzesService {
   }
 
   findAll() {
-    return `This action returns all quizzes`;
+    return this.quizRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} quiz`;
+  async findOne(id: string) {
+    return this.quizRepository.findOne({where:{id: id}});
+    
   }
 
   update(id: number, updateQuizDto: UpdateQuizDto) {

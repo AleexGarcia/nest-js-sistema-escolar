@@ -13,4 +13,8 @@ export class Task {
     status: boolean;
     @ManyToOne(type=> Student , (student) => student.tasks)
     student: Student;
+    constructor(quiz: Quiz, student: Student){
+        this.quiz = quiz;
+        this.student = student;
+    }
 }

@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserRole } from './enum/user-roles.enum';
 import { Student } from './entities/student.entity';
@@ -36,16 +36,19 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    return;
+    return this.userRepository.findOne({where:{id: id}});
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const { currentRole, newRole } = updateUserDto;
+    
   }
 
-  async remove(id: string, role: UserRole) {}
+  async remove(id: string): Promise<DeleteResult> {
+    return this.userRepository.delete(id);
+  }
 
-  private createUserWithRole(email: string, password: string,role: UserRole) {
+  private createUserWithRole(email: string, password: string, role: UserRole) {
     switch (role) {
       case 'Student':
         return new Student(email,password);
