@@ -1,6 +1,7 @@
-import { Column, PrimaryGeneratedColumn, TableInheritance } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, TableInheritance } from "typeorm";
 import { UserRole } from "../enum/user-roles.enum";
-
+@Entity()
+@TableInheritance({ column: { type: "enum", name: "role" ,enum: UserRole} })
 export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string
@@ -10,12 +11,8 @@ export class User {
     email: string
     @Column()
     password: string
-    @Column()
-    role: UserRole;
-    constructor(email: string, password: string, role: UserRole){
+    constructor(email:string, password: string){
         this.email = email;
         this.password = password;
-        this.role = role;
     }
-
 }

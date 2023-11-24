@@ -1,18 +1,18 @@
 import { Course } from 'src/courses/entities/course.entity';
 import { User } from './user.entity';
 import { Task } from 'src/tasks/entities/task.entity';
-import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
+import { ChildEntity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
-@Entity()
-export class Student {
-  @Column(() => User)
-  user: User;
+@ChildEntity()
+export class Student extends User {
+  @ManyToMany((type) => Course, (course) => course.students,{eager: true})
+  @JoinTable()
+  courses: Course[];
 
-  @ManyToMany((type) => Course, (course) => course.students)
-  courses: Array<Course>;
+  @OneToMany((type) => Task, (task) => task.student,{eager: true})
+  tasks: Task[];
 
-  @OneToMany((type) => Task, (task) => task.student)
-  tasks: Array<Task>;
-  
-  
+  constructor(email: string, password: string) {
+    super(email, password);
+  }
 }

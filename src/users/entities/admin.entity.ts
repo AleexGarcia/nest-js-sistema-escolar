@@ -1,10 +1,10 @@
-import { Entity, Column } from 'typeorm';
+import { ChildEntity } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity()
-export class Admin {
-  @Column(() => User)
-  user: User;
-
+@ChildEntity()
+export class Admin extends User{
+    constructor(email:string, password: string){
+        super(email,password)
+    }
  
 }
