@@ -7,31 +7,28 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AdminsService {
-
   constructor(
     @InjectRepository(Admin)
-    private readonly adminRepository: Repository<Admin>
-  ){
-
-  }
+    private readonly adminRepository: Repository<Admin>,
+  ) {}
 
   create(createAdminDto: CreateAdminDto) {
     return 'This action adds a new admin';
   }
 
   findAll() {
-    return `This action returns all admins`;
+    return this.adminRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
+  findOne(id: string) {
+    return this.adminRepository.findOne({ where: { id: id } });
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
+  update(id: string, updateAdminDto: UpdateAdminDto) {
     return `This action updates a #${id} admin`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  remove(id: string) {
+    return this.adminRepository.delete(id);
   }
 }

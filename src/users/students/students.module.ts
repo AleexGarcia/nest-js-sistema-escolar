@@ -11,5 +11,6 @@ import { CoursesModule } from 'src/courses/courses.module';
   imports: [TypeOrmModule.forFeature([Student]),forwardRef(() => CoursesModule)],
   controllers: [StudentsController],
   providers: [StudentsService],
+  exports:[StudentsService]
 })
 export class StudentsModule {}

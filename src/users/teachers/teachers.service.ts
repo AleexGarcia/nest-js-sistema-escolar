@@ -17,7 +17,7 @@ export class TeachersService {
   }
 
   findAll() {
-    return `This action returns all teachers`;
+    return this.teacherRepository.find();
   }
 
   findOne(id: string) {
@@ -29,6 +29,6 @@ export class TeachersService {
   }
 
   remove(id: string) {
-    return `This action removes a #${id} teacher`;
+    return this.teacherRepository.delete(id);
   }
 }
