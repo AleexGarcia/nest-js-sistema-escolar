@@ -1,6 +1,6 @@
 import { Quiz } from 'src/quizzes/entities/quiz.entity';
-import { Student } from 'src/users/entities/student.entity';
-import { Teacher } from 'src/users/entities/teacher.entity';
+import { Teacher } from 'src/users/teachers/entities/teacher.entity';
+import { Student } from 'src/users/students/entities/student.entity';
 import {
   Column,
   Entity,

@@ -6,13 +6,14 @@ import { QuizzesModule } from './quizzes/quizzes.module';
 import { QuestionsModule } from './questions/questions.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
-import { Student } from './users/entities/student.entity';
-import { Teacher } from './users/entities/teacher.entity';
-import { Admin } from './users/entities/admin.entity';
+
+import { Teacher } from './users/teachers/entities/teacher.entity';
+import { Admin } from './users/admins/entities/admin.entity';
 import { Task } from './tasks/entities/task.entity';
 import { Quiz } from './quizzes/entities/quiz.entity';
 import { Course } from './courses/entities/course.entity';
 import { Question } from './questions/entities/question.entity';
+import { Student } from './users/students/entities/student.entity';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { Question } from './questions/entities/question.entity';
     CoursesModule,
     TasksModule,
     QuizzesModule,
-    QuestionsModule,
+    QuestionsModule
   ],
   controllers: [],
   providers: [],

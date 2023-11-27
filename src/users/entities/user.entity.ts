@@ -11,6 +11,9 @@ export class User {
     email: string
     @Column()
     password: string
+    @Column({ type: 'enum', enum: UserRole})
+    role: UserRole;
+
     constructor(email:string, password: string){
         this.email = email;
         this.password = password;

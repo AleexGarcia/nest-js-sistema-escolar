@@ -11,13 +11,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsOptional()
     @IsNotEmpty()
     password?: string;
-    
-    @IsEnum(UserRole)
-    currentRole: UserRole;
-
     @IsOptional()
     @IsEnum(UserRole)
-    newRole: UserRole;
+    role: UserRole;
 
     @IsOptional()
     @IsString()

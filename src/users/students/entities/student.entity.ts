@@ -1,7 +1,7 @@
-import { Course } from 'src/courses/entities/course.entity';
-import { User } from './user.entity';
-import { Task } from 'src/tasks/entities/task.entity';
-import { ChildEntity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Course } from "src/courses/entities/course.entity";
+import { Task } from "src/tasks/entities/task.entity";
+import { User } from "src/users/entities/user.entity";
+import { ChildEntity, ManyToMany, JoinTable, OneToMany } from "typeorm";
 
 @ChildEntity()
 export class Student extends User {

@@ -1,5 +1,5 @@
 import { Course } from "src/courses/entities/course.entity";
-import { User } from "./user.entity";
+import { User } from "../../entities/user.entity";
 import { ChildEntity, OneToMany } from "typeorm";
 
 @ChildEntity()

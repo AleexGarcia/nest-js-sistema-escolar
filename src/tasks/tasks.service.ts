@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import { Task } from './entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quiz } from 'src/quizzes/entities/quiz.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Student } from 'src/users/entities/student.entity';
+import { Student } from 'src/users/students/entities/student.entity';
+
 
 @Injectable()
 export class TasksService {

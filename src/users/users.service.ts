@@ -5,9 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserRole } from './enum/user-roles.enum';
-import { Student } from './entities/student.entity';
-import { Teacher } from './entities/teacher.entity';
-import { Admin } from './entities/admin.entity';
+import { Teacher } from './teachers/entities/teacher.entity';
+import { Admin } from './admins/entities/admin.entity';
+import { Student } from './students/entities/student.entity';
+
 
 @Injectable()
 export class UsersService {
@@ -40,7 +41,13 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const { currentRole, newRole } = updateUserDto;
+    const {role } = updateUserDto;
+    const user = await this.findOne(id);
+    if(!user) throw new Error('Invalid id');
+
+    if(role === user.role){
+      
+    }
     
   }
 
