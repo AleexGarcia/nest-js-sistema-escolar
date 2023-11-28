@@ -26,12 +26,12 @@ export class Course {
   teacher: Teacher;
 
   @OneToMany((type) => Quiz, (quiz) => quiz.course)
-  quizzes: Array<Quiz>;
+  quizzes: Quiz[];
 
   @OneToMany((type) => Enrollment, (enrollments) => enrollments.course)
   enrollments: Enrollment[];
 
-  constructor(name: string, code: string, teacher: Teacher){
+  constructor(name: string, code: string, teacher: Teacher) {
     this.name = name;
     this.code = code;
     this.teacher = teacher;

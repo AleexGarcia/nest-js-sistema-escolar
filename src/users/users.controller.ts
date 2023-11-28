@@ -14,33 +14,33 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @ApiOperation({summary: 'Create user'})
+  @ApiOperation({summary: 'Create a new user'})
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
   
   @Get()
-  @ApiOperation({summary: 'FindAll user'})
+  @ApiOperation({summary: 'Get a list of all users.'})
   findAll() {
     return this.usersService.findAll();
   }
   
   @Get(':id')
-  @ApiOperation({summary: 'FindOne user'})
+  @ApiOperation({summary: 'Get details of a specific user by ID.'})
   findOne(@Param() params: FindOneParams) {
     const {id} = params;
     return this.usersService.findOne(id);
   }
   
   @Patch(':id')
-  @ApiOperation({summary: 'Update user'})
+  @ApiOperation({summary: 'Update details of a specific user by ID.'})
   update(@Param() param: UpdateParams, @Body() updateUserDto: UpdateUserDto) {
     
     return this.usersService.update(param.id, updateUserDto);
   }
   
   @Delete(':id')
-  @ApiOperation({summary: 'Remove user'})
+  @ApiOperation({summary: 'Delete a specific user by ID.'})
   remove(@Param() params: RemoveParams) {
     const {id} = params;
     return this.usersService.remove(id);

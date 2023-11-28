@@ -77,4 +77,17 @@ export class StudentsService {
 
     return this.studentRepository.delete(id);
   }
+
+  async findAllCoursesEnrolled(id: string) {
+    const student = await this.studentRepository.findOneOrFail({
+      where: { id: id },
+      relations: ['enrollments'],
+    });
+  }
+  async findAllTasks(id: string) {
+    const student = await this.studentRepository.findOneOrFail({
+      where: { id: id },
+      relations: ['enrollments'],
+    });
+  }
 }

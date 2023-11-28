@@ -11,8 +11,8 @@ export class CoursesService {
   constructor(
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
-    @Inject(forwardRef(() => TeachersService) )
-    private readonly teacherService: TeachersService
+    @Inject(forwardRef(() => TeachersService))
+    private readonly teacherService: TeachersService,
   ) {}
   async create(createCourseDto: CreateCourseDto) {
     const { name, code, teacherId } = createCourseDto;
@@ -26,7 +26,7 @@ export class CoursesService {
   }
 
   async findOne(id: string) {
-    return this.courseRepository.findOne({ where: { id: id } });
+    return await this.courseRepository.findOne({ where: { id: id } });
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto) {
@@ -34,6 +34,20 @@ export class CoursesService {
   }
 
   async remove(id: string) {
-    return this.courseRepository.delete(id);
+    return await this.courseRepository.delete(id);
+  }
+
+  async findAllStudentsInCourse(id: string) {
+    return await this.courseRepository.findOne({
+      where: { id: id },
+      relations: ['enrollments', 'enrollments.student'],
+    });
+  }
+
+  async findAllQuizzesInCourse(id: string){
+    return await this.courseRepository.findOne({
+      where: { id: id },
+      relations: ['quizzes'],
+    });
   }
 }
