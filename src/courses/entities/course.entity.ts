@@ -9,6 +9,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
 
 @Entity()
 export class Course {
@@ -24,11 +25,11 @@ export class Course {
   @ManyToOne((type) => Teacher, (teacher) => teacher.assignedCourses)
   teacher: Teacher;
 
-  @OneToMany((type) => Quiz, (quiz) => quiz.course,{eager: true})
+  @OneToMany((type) => Quiz, (quiz) => quiz.course)
   quizzes: Array<Quiz>;
 
-  @ManyToMany((type) => Student, (student) => student.courses)
-  students: Array<Student>;
+  @OneToMany((type) => Enrollment, (enrollments) => enrollments.course)
+  enrollments: Enrollment[];
 
   constructor(name: string, code: string, teacher: Teacher){
     this.name = name;

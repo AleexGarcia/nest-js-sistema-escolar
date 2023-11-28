@@ -13,7 +13,8 @@ export class AdminsService {
   ) {}
 
   create(createAdminDto: CreateAdminDto) {
-    return 'This action adds a new admin';
+    const {email,password} = createAdminDto;
+    return this.adminRepository.save(new Admin(email, password));
   }
 
   findAll() {

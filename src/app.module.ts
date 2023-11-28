@@ -14,6 +14,8 @@ import { Quiz } from './quizzes/entities/quiz.entity';
 import { Course } from './courses/entities/course.entity';
 import { Question } from './questions/entities/question.entity';
 import { Student } from './users/students/entities/student.entity';
+import { EnrollmentsModule } from './enrollments/enrollments.module';
+import { Enrollment } from './enrollments/entities/enrollment.entity';
 
 @Module({
   imports: [
@@ -24,14 +26,15 @@ import { Student } from './users/students/entities/student.entity';
       username: 'postgres',
       password: '123',
       database: 'db_sistema_escolar',
-      entities: [User,Task,Student,Teacher,Admin,Quiz,Course, Question],
+      entities: [User,Task,Student,Teacher,Admin,Quiz,Course, Question, Enrollment],
       synchronize: true,
     }),
     UsersModule,
     CoursesModule,
     TasksModule,
     QuizzesModule,
-    QuestionsModule
+    QuestionsModule,
+    EnrollmentsModule
   ],
   controllers: [],
   providers: [],

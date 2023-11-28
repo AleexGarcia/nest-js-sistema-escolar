@@ -27,7 +27,7 @@ export class Quiz {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   deadlineDate: Date;
 
-  @OneToMany((type) => Question, (question) => question.quiz, { eager: true })
+  @OneToMany((type) => Question, (question) => question.quiz)
   questions: Array<Question>;
 
   @ManyToOne((type) => Course, (course) => course.quizzes)

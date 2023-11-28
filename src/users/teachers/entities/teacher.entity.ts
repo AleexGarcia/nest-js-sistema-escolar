@@ -5,7 +5,7 @@ import { ChildEntity, OneToMany } from "typeorm";
 @ChildEntity()
 export class Teacher extends User{
 
-    @OneToMany(type => Course, course => course.teacher,{eager: true})
+    @OneToMany(type => Course, course => course.teacher)
     assignedCourses: Array<Course>;
     constructor(email:string, password: string){
         super(email,password)

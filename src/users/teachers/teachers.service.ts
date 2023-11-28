@@ -13,7 +13,8 @@ export class TeachersService {
   ) {}
 
   create(createTeacherDto: CreateTeacherDto) {
-    return 'This action adds a new teacher';
+    const {email,password} = createTeacherDto;
+    return this.teacherRepository.save(new Teacher(email, password));
   }
 
   findAll() {
