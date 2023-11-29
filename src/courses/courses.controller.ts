@@ -11,6 +11,7 @@ import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
 
 @ApiTags('courses')
 @Controller('courses')
@@ -31,7 +32,8 @@ export class CoursesController {
 
   @ApiOperation({ summary: 'Get details of a specific course by ID.' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() params: CommonGetIdDto) {
+    const {id} = params;
     return this.coursesService.findOne(id);
   }
 
@@ -39,25 +41,29 @@ export class CoursesController {
     summary: 'Get a list of all students enrolled in a specific course.',
   })
   @Get(':id/students')
-  findAllStudentsInCourse(@Param('id') id: string) {
+  findAllStudentsInCourse(@Param() params: CommonGetIdDto) {
+    const {id} = params;
     return this.coursesService.findAllStudentsInCourse(id);
   }
 
   @ApiOperation({ summary: 'Get a list of all quizzes associated with a specific course.' })
   @Get(':id/quizzes')
-  findAllQuizzesInCourse(@Param('id') id: string) {
+  findAllQuizzesInCourse(@Param() params: CommonGetIdDto) {
+    const {id} = params;
     return this.coursesService.findAllQuizzesInCourse(id);
   }
 
   @ApiOperation({ summary: 'Update details of a specific course by ID.' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+  update(@Param() params: CommonGetIdDto, @Body() updateCourseDto: UpdateCourseDto) {
+    const {id} = params;
     return this.coursesService.update(id, updateCourseDto);
   }
 
   @ApiOperation({ summary: 'Delete a specific course by ID.' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() params: CommonGetIdDto) {
+    const {id} = params;
     return this.coursesService.remove(id);
   }
 }

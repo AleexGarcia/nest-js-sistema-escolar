@@ -9,9 +9,14 @@ import { AdminsModule } from './admins/admins.module';
 
 
 @Module({
-  imports:[TypeOrmModule.forFeature([User]), StudentsModule, TeachersModule, AdminsModule],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    StudentsModule,
+    TeachersModule,
+    AdminsModule,
+  ],
   controllers: [UsersController],
   providers: [UsersService],
-  exports:[StudentsModule, TeachersModule, AdminsModule]
+  exports: [StudentsModule, TeachersModule, AdminsModule],
 })
 export class UsersModule {}

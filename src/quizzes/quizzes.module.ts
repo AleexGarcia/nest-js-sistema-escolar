@@ -9,6 +9,7 @@ import { CoursesModule } from 'src/courses/courses.module';
   imports: [
     TypeOrmModule.forFeature([Quiz]),
     forwardRef(() => CoursesModule),
+    
   ],
   controllers: [QuizzesController],
   providers: [QuizzesService],

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { CommonGetIdDto } from './dto/common-get-id.dto';
 
 @Module({
-    exports:[CommonGetIdDto]
+  exports: [],
+  providers: []
 })
 export class SharedModule {}

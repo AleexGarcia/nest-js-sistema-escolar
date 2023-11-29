@@ -3,6 +3,7 @@ import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -20,17 +21,20 @@ export class TasksController {
   }
   @ApiOperation({summary:'Get details of a specific task by ID.'})
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() params: CommonGetIdDto) {
+    const {id} = params;
     return this.tasksService.findOne(id);
   }
   @ApiOperation({summary:'Update details of a specific task by ID.'})
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+  update(@Param() params: CommonGetIdDto, @Body() updateTaskDto: UpdateTaskDto) {
+    const {id} = params;
     return this.tasksService.update(id, updateTaskDto);
   }
   @ApiOperation({summary:'Delete a specific task by ID.'})
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() params: CommonGetIdDto) {
+    const {id} = params;
     return this.tasksService.remove(id);
   }
 }

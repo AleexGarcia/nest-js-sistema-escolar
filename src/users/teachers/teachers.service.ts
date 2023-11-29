@@ -52,7 +52,15 @@ export class TeachersService {
     if (!teacher) throw new NotFoundException('teacher not found');
 
     await this.courseService.removeAllCoursesByUser(teacher);
-    
+
     return await this.teacherRepository.delete(id);
+  }
+  async findAllAssignedCourses(id: string) {
+    const teacher = await this.teacherRepository.findOneOrFail({
+      where: { id: id },
+      relations: ['assignedCourses'],
+    });
+    if(!teacher) throw new NotFoundException('Teacher not found');
+    return teacher.assignedCourses;
   }
 }
