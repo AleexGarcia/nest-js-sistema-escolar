@@ -1,6 +1,8 @@
 import {
+  ConflictException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   forwardRef,
 } from '@nestjs/common';
@@ -25,18 +27,24 @@ export class EnrollmentsService {
   ) {}
 
   async create(createEnrollmentDto: CreateEnrollmentDto) {
-    const { courseId, studentId } = createEnrollmentDto;
-
-    const [student, course] = await Promise.all([
-      this.studentService.findOne(studentId),
-      this.courseService.findOne(courseId),
-    ]);
-
-    if (student && course) {
-      const newEnrollment = new Enrollment(student, course);
-      this.enrollmentRepository.save(newEnrollment);
-    } else {
-      throw new NotFoundException('student or course not found');
+    try{
+      const { courseId, studentId } = createEnrollmentDto;
+      const [student, course] = await Promise.all([
+        this.studentService.findOne(studentId),
+        this.courseService.findOne(courseId),
+      ]);
+      if (student && course) {
+        const newEnrollment = new Enrollment(student, course);
+        return await this.enrollmentRepository.save(newEnrollment);
+      } else {
+        throw new NotFoundException('student or course not found');
+      }
+    }catch(err: any){
+      if(err.code === '23505'){
+        throw new ConflictException('The combination of student and course already exists.');
+      }else{
+        throw new InternalServerErrorException('An unexpected error occurred.');
+      }
     }
   }
 

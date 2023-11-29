@@ -34,11 +34,11 @@ export class QuizzesController {
   @ApiOperation({ summary: 'Update details of a specific quiz by ID.' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateQuizDto: UpdateQuizDto) {
-    return this.quizzesService.update(+id, updateQuizDto);
+    return this.quizzesService.update(id, updateQuizDto);
   }
   @ApiOperation({ summary: 'Delete a specific quiz by ID.' })
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.quizzesService.remove(+id);
+    return this.quizzesService.remove(id);
   }
 }

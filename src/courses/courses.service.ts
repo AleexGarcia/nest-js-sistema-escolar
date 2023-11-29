@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Repository } from 'typeorm';
@@ -39,17 +39,21 @@ export class CoursesService {
   }
 
   async findAllStudentsInCourse(id: string) {
-    return await this.courseRepository.findOne({
+    const course = await this.courseRepository.findOne({
       where: { id: id },
       relations: ['enrollments', 'enrollments.student'],
     });
+    if(!course) throw new NotFoundException('course not found');
+    return course.enrollments;
   }
 
   async findAllQuizzesInCourse(id: string) {
-    return await this.courseRepository.findOne({
+    const course = await this.courseRepository.findOne({
       where: { id: id },
       relations: ['quizzes'],
     });
+    if(!course) throw new NotFoundException('course not found');
+    return course.quizzes;
   }
 
   async removeAllCoursesByUser(teacher: Teacher) {

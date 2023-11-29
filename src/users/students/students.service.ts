@@ -4,16 +4,14 @@ import {
   NotFoundException,
   forwardRef,
 } from '@nestjs/common';
-import { EnrollStudentDTO } from './dto/enroll-student.dto';
+
 import { Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
-import { CoursesService } from 'src/courses/courses.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateStudentDto } from './dto/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
 import { TasksService } from 'src/tasks/tasks.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { EnrollmentsService } from 'src/enrollments/enrollments.service';
+import { CreateStudentDto } from './dto/create-student.dto';
 
 @Injectable()
 export class StudentsService {
@@ -55,28 +53,32 @@ export class StudentsService {
     });
 
     if (!student) throw new NotFoundException('Student not found');
-    
+
     await Promise.all([
       this.enrollmentService.removeAllEnrollmentByUser(student),
-      this.taskService.removeAllTasksByUser(student)
-    ])
+      this.taskService.removeAllTasksByUser(student),
+    ]);
 
     return await this.studentRepository.delete(id);
   }
 
   async findAllCoursesEnrolled(id: string) {
-    const student = await this.studentRepository.findOneOrFail({
+    const student = await this.studentRepository.findOne({
       where: { id: id },
-      relations: ['enrollments'],
+      relations: ['enrollments', 'enrollments.course'],
     });
+
+    if (!student) throw new NotFoundException('student not found');
     return student.enrollments;
   }
 
   async findAllTasks(id: string) {
     const student = await this.studentRepository.findOneOrFail({
       where: { id: id },
-      relations: ['tasks'],
+      relations: ['tasks', 'tasks.quiz'],
     });
+
+    if (!student) throw new NotFoundException('student not found');
     return student.tasks;
   }
 }

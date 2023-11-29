@@ -1,13 +1,13 @@
-import { IsNotEmpty, IsString, IsUUID, Max } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID, MaxLength } from "class-validator";
 
 export class CreateCourseDto {
     @IsString()
     @IsNotEmpty()
     name: string
 
-    @Max(3)
-    @IsString()
     @IsNotEmpty()
+    @IsString()
+    @MaxLength(3)
     code: string
     
     @IsUUID()

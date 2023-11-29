@@ -1,8 +1,12 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { Repository } from 'typeorm';
-import { Quiz } from 'src/quizzes/entities/quiz.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { QuizzesService } from 'src/quizzes/quizzes.service';
@@ -23,23 +27,27 @@ export class QuestionsService {
       const question = new Question(statement, options, quiz);
       return this.questionRepository.save(question);
     } else {
-      throw new Error('Invalid id quiz');
+      throw new NotFoundException('Quiz not found');
     }
   }
 
-  findAll() {
-    return `This action returns all questions`;
+  async findAll() {
+    return await this.questionRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} question`;
+ async  findOne(id: string) {
+    return await this.questionRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
   }
 
-  update(id: string, updateQuestionDto: UpdateQuestionDto) {
+  async update(id: string, updateQuestionDto: UpdateQuestionDto) {
     return `This action updates a #${id} question`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} question`;
+  async remove(id: string) {
+    return await this.questionRepository.delete(id);
   }
 }

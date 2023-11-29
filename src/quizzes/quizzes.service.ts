@@ -12,7 +12,7 @@ export class QuizzesService {
   constructor(
     @InjectRepository(Quiz)
     private quizRepository: Repository<Quiz>,
-    @Inject(forwardRef(()=> CoursesService))
+    @Inject(forwardRef(() => CoursesService))
     private coursesService: CoursesService,
   ) {}
 
@@ -21,8 +21,7 @@ export class QuizzesService {
       const { course_id, name, description, deadlineDate } = createQuizDto;
       const course = await this.coursesService.findOne(course_id);
       if (course) {
-        
-        const parsedDeadlineDate  = new Date(deadlineDate);
+        const parsedDeadlineDate = new Date(deadlineDate);
         const quiz = new Quiz(name, description, parsedDeadlineDate, course);
         return this.quizRepository.save(quiz);
       } else {
@@ -38,15 +37,14 @@ export class QuizzesService {
   }
 
   async findOne(id: string) {
-    return this.quizRepository.findOne({where:{id: id}});
-    
+    return await this.quizRepository.findOne({ where: { id: id }, relations: ['questions'] });
   }
 
-  update(id: number, updateQuizDto: UpdateQuizDto) {
+  update(id: string, updateQuizDto: UpdateQuizDto) {
     return `This action updates a #${id} quiz`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} quiz`;
+  remove(id: string) {
+    return this.quizRepository.delete(id);
   }
 }
