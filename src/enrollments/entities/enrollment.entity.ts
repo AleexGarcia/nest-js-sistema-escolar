@@ -5,17 +5,16 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Enrollment {
-  
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ManyToOne((type) => Student, (student) => student.enrollments)
   student: Student;
- 
-  @ManyToOne(type => Course, (course) => course.enrollments)
+
+  @ManyToOne((type) => Course, (course) => course.enrollments)
   course: Course;
 
-  @Column({ default: EnrollStatus.ACTIVE })
+  @Column({ type: 'enum', enum: EnrollStatus, default: EnrollStatus.ACTIVE })
   status: EnrollStatus;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -25,5 +24,4 @@ export class Enrollment {
     this.student = student;
     this.course = course;
   }
-
 }

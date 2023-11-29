@@ -4,6 +4,7 @@ import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class AdminsService {
@@ -25,8 +26,11 @@ export class AdminsService {
     return this.adminRepository.findOne({ where: { id: id } });
   }
 
-  update(id: string, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
+  async update(updateUserDto: UpdateUserDto) {
+    const { email, password, name } = updateUserDto;
+    const admin = new Admin(email, password);
+    if (name) admin.name = name;
+    return await this.adminRepository.save(admin);
   }
 
   remove(id: string) {

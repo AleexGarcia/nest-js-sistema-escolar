@@ -12,33 +12,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { TasksService } from 'src/tasks/tasks.service';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { EnrollmentsService } from 'src/enrollments/enrollments.service';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
-    @Inject(forwardRef(() => CoursesService))
-    private readonly courseService: CoursesService,
+    @Inject(forwardRef(() => EnrollmentsService))
+    private readonly enrollmentService: EnrollmentsService,
     @Inject(forwardRef(() => TasksService))
     private readonly taskService: TasksService,
   ) {}
-
-  async enrollStudent(enrollStudentDTO: EnrollStudentDTO) {
-    const { courseId, studentId } = enrollStudentDTO;
-    const [student, course] = await Promise.all([
-      this.studentRepository.findOne({ where: { id: studentId } }),
-      this.courseService.findOne(courseId),
-    ]);
-    if (student && course) {
-      if (!student.enrollments) {
-        student.enrollments = [];
-      } else {
-        student.enrollments.push();
-      }
-      this.studentRepository.save(student);
-    }
-  }
 
   async create(createStudentDto: CreateStudentDto) {
     const { email, password } = createStudentDto;
@@ -53,8 +39,11 @@ export class StudentsService {
     return this.studentRepository.findOne({ where: { id: id } });
   }
 
-  async update(id: string, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async update(updateUserDto: UpdateUserDto) {
+    const { email, password, name } = updateUserDto;
+    const student = new Student(email, password);
+    if (name) student.name = name;
+    return await this.studentRepository.save(student);
   }
 
   async remove(id: string) {
@@ -62,20 +51,17 @@ export class StudentsService {
       where: {
         id: id,
       },
-      relations: ['courses', 'tasks'],
+      relations: ['enrollments', 'tasks'],
     });
 
     if (!student) throw new NotFoundException('Student not found');
+    
+    await Promise.all([
+      this.enrollmentService.removeAllEnrollmentByUser(student),
+      this.taskService.removeAllTasksByUser(student)
+    ])
 
-    // await Promise.all(
-    //   student.courses.map((course) => this.courseService.remove(course.id)),
-    // );
-
-    await Promise.all(
-      student.tasks.map((task) => this.taskService.remove(task.id)),
-    );
-
-    return this.studentRepository.delete(id);
+    return await this.studentRepository.delete(id);
   }
 
   async findAllCoursesEnrolled(id: string) {
@@ -83,11 +69,14 @@ export class StudentsService {
       where: { id: id },
       relations: ['enrollments'],
     });
+    return student.enrollments;
   }
+
   async findAllTasks(id: string) {
     const student = await this.studentRepository.findOneOrFail({
       where: { id: id },
-      relations: ['enrollments'],
+      relations: ['tasks'],
     });
+    return student.tasks;
   }
 }

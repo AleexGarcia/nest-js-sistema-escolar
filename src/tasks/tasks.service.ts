@@ -6,6 +6,7 @@ import { Task } from './entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuizzesService } from 'src/quizzes/quizzes.service';
 import { StudentsService } from 'src/users/students/students.service';
+import { Student } from 'src/users/students/entities/student.entity';
 
 @Injectable()
 export class TasksService {
@@ -17,6 +18,7 @@ export class TasksService {
     @Inject(forwardRef(() => QuizzesService))
     private readonly quizService: QuizzesService,
   ) {}
+  
   async create(createTaskDto: CreateTaskDto) {
     const { quizId, studentId } = createTaskDto;
     const [quiz, student] = await Promise.all([
@@ -31,19 +33,23 @@ export class TasksService {
     }
   }
 
-  findAll() {
-    return `This action returns all tasks`;
+  async findAll() {
+    return await this.taskRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} task`;
+  async findOne(id: string) {
+    return await this.taskRepository.findOne({ where: { id: id } });
   }
 
-  update(id: string, updateTaskDto: UpdateTaskDto) {
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
     return `This action updates a #${id} task`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} task`;
+  async remove(id: string) {
+    return this.taskRepository.delete(id);
+  }
+
+  async removeAllTasksByUser(student: Student) {
+    return await this.taskRepository.delete({ student: student });
   }
 }

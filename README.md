@@ -16,7 +16,6 @@ Api - Sistema escolar
 - [] Visualizar disciplinas matriculadas
 - [] Visualizar tarefas completas e incompletas por disciplinas
 - [] Responder questionario da disciplina.
-- [] Visualizar nota atribuida
 
 ### Professor
 
@@ -29,7 +28,7 @@ Api - Sistema escolar
 - [] CRUD Usuários
 - [] CRUD de Disciplinas, assignando um professor a cada disciplina.
 
-## Levantamento de Classes
+## Entidades
 
 ### User
 
@@ -42,15 +41,14 @@ Api - Sistema escolar
 ### Student
 
 - extends User
-- enrollmentNumber
-- courses[]
-- Tasks[]
+- enrollments
+- Tasks
 
 
 ### Teacher
 
 - extends User
-- assignedCourses[]
+- assignedCourses
 
 ### Admin
 
@@ -61,8 +59,9 @@ Api - Sistema escolar
 - id
 - name
 - teacher
-- students
 - code
+- enrollments
+- quizzes
 
 ### Task
 
@@ -74,6 +73,10 @@ Api - Sistema escolar
 ### Quiz
 
 - id
+- name
+- description
+- createAt
+- deadlineDate
 - questions[]
 - course
 
@@ -82,6 +85,19 @@ Api - Sistema escolar
 - id
 - statement
 - options[]
+- quiz
+
+### Enrollment
+- id
+- status
+- enrollmentDate
+- student
+- course
+
+## Diagrama de ER do banco de dados
+
+![Diagrama de ER do banco de dados](./Diagrama%20ER%20de%20banco%20de%20dados_%20Sistema%20escolar.svg)
+
 <!-- 
 ## Installation
 

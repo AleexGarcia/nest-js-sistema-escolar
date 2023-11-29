@@ -1,4 +1,9 @@
-import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +15,7 @@ import { TeachersService } from './teachers/teachers.service';
 import { Student } from './students/entities/student.entity';
 import { Teacher } from './teachers/entities/teacher.entity';
 import { Admin } from './admins/entities/admin.entity';
+import { UserRole } from './enum/user-roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -26,10 +32,10 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      return this.createUserWithRole(createUserDto);
+      return await this.createUserWithRole(createUserDto);
     } catch (err: any) {
       if (err.code == 23505) {
-        throw new ConflictException('E-mail já cadastrado');
+        throw new ConflictException('E-mail already registered');
       } else {
         throw err;
       }
@@ -57,20 +63,24 @@ export class UsersService {
       }
       return await this.userRepository.save(user);
     } else {
-      await this.remove(id);
-      return await this.createUserWithRole({
-        email: updateUserDto.email,
-        password: updateUserDto.password,
-        role: updateUserDto.role,
-      });
+      const userToUpdate = {} as UpdateUserDto;
+      for (const key in user) {
+        if (updateUserDto[key] && user[key] != updateUserDto[key]) {
+          userToUpdate[key] = updateUserDto[key];
+        } else {
+          userToUpdate[key] = user[key];
+        }
+      }
+      await this.deleteUserAndRelationsByRole(id, user.role);
+      return await this.updateUserWithRole(userToUpdate);
     }
   }
 
   async remove(id: string): Promise<DeleteResult> {
-    return this.userRepository.delete(id);
+    return await this.userRepository.delete(id);
   }
 
-  private createUserWithRole(
+  private async createUserWithRole(
     createUserDto: CreateUserDto,
   ): Promise<Admin | Student | Teacher> {
     const { role } = createUserDto;
@@ -83,6 +93,27 @@ export class UsersService {
         return this.adminService.create(createUserDto);
     }
   }
-  
 
+  private async updateUserWithRole(updateUserDto: UpdateUserDto) {
+    const { role } = updateUserDto;
+    switch (role) {
+      case 'Student':
+        return this.studentService.update(updateUserDto);
+      case 'Teacher':
+        return this.teacherService.update(updateUserDto);
+      case 'Admin':
+        return this.adminService.update(updateUserDto);
+    }
+  }
+
+  private async deleteUserAndRelationsByRole(id: string, role: UserRole) {
+    switch (role) {
+      case 'Student':
+        return this.studentService.remove(id);
+      case 'Teacher':
+        return this.teacherService.remove(id);
+      case 'Admin':
+        return this.adminService.remove(id);
+    }
+  }
 }

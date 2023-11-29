@@ -1,18 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
 import { Repository } from 'typeorm';
 import { Enrollment } from './entities/enrollment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CoursesService } from 'src/courses/courses.service';
+import { StudentsService } from 'src/users/students/students.service';
+import { Student } from 'src/users/students/entities/student.entity';
 
 @Injectable()
 export class EnrollmentsService {
   constructor(
     @InjectRepository(Enrollment)
     private readonly enrollmentRepository: Repository<Enrollment>,
+    @Inject(forwardRef(() => CoursesService))
+    private readonly courseService: CoursesService,
+    @Inject(forwardRef(() => StudentsService) )
+    private readonly studentService: StudentsService,
   ) {}
-  create(createEnrollmentDto: CreateEnrollmentDto) {
-    return 'This action adds a new enrollment';
+
+  async create(createEnrollmentDto: CreateEnrollmentDto) {
+    const { courseId, studentId } = createEnrollmentDto;
+
+    const [student, course] = await Promise.all([
+      this.studentService.findOne(studentId),
+      this.courseService.findOne(courseId),
+    ]);
+
+    if (student && course) {
+      const newEnrollment = new Enrollment(student, course);
+      this.enrollmentRepository.save(newEnrollment);
+    } else {
+      throw new NotFoundException('student or course not found');
+    }
   }
 
   findAll() {
@@ -29,5 +54,9 @@ export class EnrollmentsService {
 
   remove(id: string) {
     return this.enrollmentRepository.delete(id);
+  }
+
+  async removeAllEnrollmentByUser(student: Student) {
+    return this.enrollmentRepository.delete({ student: student });
   }
 }

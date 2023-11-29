@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Course } from './entities/course.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TeachersService } from 'src/users/teachers/teachers.service';
+import { Teacher } from 'src/users/teachers/entities/teacher.entity';
 
 @Injectable()
 export class CoursesService {
@@ -44,10 +45,14 @@ export class CoursesService {
     });
   }
 
-  async findAllQuizzesInCourse(id: string){
+  async findAllQuizzesInCourse(id: string) {
     return await this.courseRepository.findOne({
       where: { id: id },
       relations: ['quizzes'],
     });
+  }
+
+  async removeAllCoursesByUser(teacher: Teacher) {
+    return await this.courseRepository.delete({ teacher: teacher });
   }
 }
