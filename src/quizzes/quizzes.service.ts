@@ -1,4 +1,10 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
 import { Quiz } from './entities/quiz.entity';
@@ -32,19 +38,42 @@ export class QuizzesService {
     }
   }
 
-  findAll() {
-    return this.quizRepository.find();
+  async findAll() {
+    return await this.quizRepository.find();
   }
 
   async findOne(id: string) {
-    return await this.quizRepository.findOne({ where: { id: id }, relations: ['questions'] });
+    try {
+      const quiz = await this.quizRepository.findOneOrFail({
+        where: { id: id },
+        relations: ['questions'],
+      });
+      return quiz;
+    } catch (error) {
+      throw new NotFoundException('quiz not found');
+    }
   }
 
-  update(id: string, updateQuizDto: UpdateQuizDto) {
-    return `This action updates a #${id} quiz`;
+  async update(id: string, updateQuizDto: UpdateQuizDto) {
+    try {
+      const quiz = await this.findOne(id);
+      for (const [key, value] of Object.entries(updateQuizDto)) {
+        if (value !== undefined) {
+          quiz[key] = value;
+        }
+      }
+      return await this.quizRepository.save(quiz);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to update course.');
+    }
   }
 
-  remove(id: string) {
-    return this.quizRepository.delete(id);
+  async remove(id: string) {
+    const result = await this.quizRepository.delete(id);
+    if (result.affected === 0) throw new NotFoundException('quiz not found');
+    return result;
   }
 }

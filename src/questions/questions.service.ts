@@ -1,6 +1,7 @@
 import {
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   forwardRef,
 } from '@nestjs/common';
@@ -35,19 +36,39 @@ export class QuestionsService {
     return await this.questionRepository.find();
   }
 
- async  findOne(id: string) {
-    return await this.questionRepository.findOne({
-      where: {
-        id: id,
-      },
-    });
+  async findOne(id: string) {
+    try {
+      const question = await this.questionRepository.findOneOrFail({
+        where: {
+          id: id,
+        },
+      });
+      return question;
+    } catch (error) {
+      throw new NotFoundException('Questios');
+    }
   }
 
   async update(id: string, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
+    try {
+      const question = await this.findOne(id);
+      for (const [key, value] of Object.entries(updateQuestionDto)) {
+        if (value !== undefined) {
+          question[key] = value;
+        }
+      }
+      return this.questionRepository.save(question);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('An unexpected error occurred.');
+    }
   }
 
   async remove(id: string) {
-    return await this.questionRepository.delete(id);
+    const result = await this.questionRepository.delete(id);
+    if (result.affected === 0) throw new NotFoundException('Task not found');
+    return result;
   }
 }

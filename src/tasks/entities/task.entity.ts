@@ -18,5 +18,6 @@ export class Task {
     constructor(quiz: Quiz, student: Student){
         this.quiz = quiz;
         this.student = student;
+        this.status = false;
     }
 }

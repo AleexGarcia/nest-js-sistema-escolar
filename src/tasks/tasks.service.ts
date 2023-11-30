@@ -55,18 +55,41 @@ export class TasksService {
   }
 
   async findOne(id: string) {
-    return await this.taskRepository.findOne({ where: { id: id } });
+    try {
+      const task = await this.taskRepository.findOneOrFail({
+        where: { id: id },
+      });
+      return task;
+    } catch (error: any) {
+      throw new NotFoundException('Task not found');
+    }
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+    try {
+      const { status } = updateTaskDto;
+      const task = await this.findOne(id);
+      task.status = status;
+      return await this.taskRepository.save(task);
+    } catch (error: any) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('An unexpected error occurred.');
+    }
   }
 
   async remove(id: string) {
-    return this.taskRepository.delete(id);
+    const result = await this.taskRepository.delete(id);
+    if (result.affected === 0) throw new NotFoundException('task not found');
+    return result;
   }
 
   async removeAllTasksByUser(student: Student) {
-    return await this.taskRepository.delete({ student: { id: student.id } });
+    const result = await this.taskRepository.delete({
+      student: { id: student.id },
+    });
+    if (result.affected === 0) throw new NotFoundException('task not found');
+    return result;
   }
 }

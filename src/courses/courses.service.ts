@@ -41,19 +41,24 @@ export class CoursesService {
   async update(id: string, updateCourseDto: UpdateCourseDto) {
     try {
       const course = await this.findOne(id);
-      for (const key in course) {
-        if (updateCourseDto[key]) {
-          course[key] = updateCourseDto[key];
+      for (const [key, value] of Object.entries(updateCourseDto)) {
+        if (value !== undefined) {
+          course[key] = value;
         }
       }
       return await this.courseRepository.save(course);
-    } catch {
+    } catch (error: any) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
       throw new InternalServerErrorException('Failed to update course.');
     }
   }
 
   async remove(id: string) {
-    return await this.courseRepository.delete(id);
+    const result = await this.courseRepository.delete(id);
+    if (result.affected === 0) throw new NotFoundException('Course not found');
+    return result;
   }
 
   async findAllStudentsInCourse(id: string) {
@@ -75,6 +80,10 @@ export class CoursesService {
   }
 
   async removeAllCoursesByUser(teacher: Teacher) {
-    return await this.courseRepository.delete({ teacher: { id: teacher.id } });
+    const result = await this.courseRepository.delete({
+      teacher: { id: teacher.id },
+    });
+    if (result.affected === 0) throw new NotFoundException('Course not found');
+    return result;
   }
 }

@@ -50,23 +50,48 @@ export class EnrollmentsService {
     }
   }
 
-  findAll() {
-    return this.enrollmentRepository.find();
+  async findAll() {
+    return await this.enrollmentRepository.find();
   }
 
-  findOne(id: string) {
-    return this.enrollmentRepository.findOne({ where: { id: id } });
+  async findOne(id: string) {
+    try {
+      const enrollment = await this.enrollmentRepository.findOneOrFail({
+        where: { id: id },
+      });
+      return enrollment;
+    } catch (error: any) {
+      throw new NotFoundException('Enrollment not found');
+    }
   }
 
-  update(id: string, updateEnrollmentDto: UpdateEnrollmentDto) {
-    return `This action updates a #${id} enrollment`;
+  async update(id: string, updateEnrollmentDto: UpdateEnrollmentDto) {
+    try {
+      const { status } = updateEnrollmentDto;
+      const enrollment = await this.findOne(id);
+      enrollment.status = status;
+      return await this.enrollmentRepository.save(enrollment);
+    } catch (error: any) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to update enrollment.');
+    }
   }
 
-  remove(id: string) {
-    return this.enrollmentRepository.delete(id);
+  async remove(id: string) {
+    const result = await this.enrollmentRepository.delete(id);
+    if (result.affected === 0)
+      throw new NotFoundException('Enrollment not found');
+    return result;
   }
 
   async removeAllEnrollmentByUser(student: Student) {
-    return this.enrollmentRepository.delete({ student: { id: student.id } });
+    const result = await this.enrollmentRepository.delete({
+      student: { id: student.id },
+    });
+    if (result.affected === 0)
+      throw new NotFoundException('Enrollment not found');
+    return result;
   }
 }
