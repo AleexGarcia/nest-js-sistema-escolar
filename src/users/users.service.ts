@@ -16,6 +16,7 @@ import { Student } from './students/entities/student.entity';
 import { Teacher } from './teachers/entities/teacher.entity';
 import { Admin } from './admins/entities/admin.entity';
 import { UserRole } from './enum/user-roles.enum';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -32,6 +33,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      createUserDto.password = await this.hashPassword(createUserDto.password);
       return await this.createUserWithRole(createUserDto);
     } catch (err: any) {
       if (err.code == 23505) {
@@ -127,4 +129,13 @@ export class UsersService {
         return this.adminService.remove(id);
     }
   }
+
+  private async hashPassword(password: string): Promise<string> {
+    const SALT_ROUNDS = 10;
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    return hashedPassword;
+  }
+
+  
 }
