@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Enrollment } from './entities/enrollment.entity';
 import { UsersModule } from 'src/users/users.module';
 import { CoursesModule } from 'src/courses/courses.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Module({
   imports: [
@@ -13,7 +15,10 @@ import { CoursesModule } from 'src/courses/courses.module';
     forwardRef(() => CoursesModule),
   ],
   controllers: [EnrollmentsController],
-  providers: [EnrollmentsService],
+  providers: [EnrollmentsService,{
+    provide: APP_GUARD,
+    useClass: AuthGuard
+  }],
   exports: [EnrollmentsService],
 })
 export class EnrollmentsModule {}
