@@ -1,4 +1,10 @@
-import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Repository } from 'typeorm';
@@ -27,11 +33,23 @@ export class CoursesService {
   }
 
   async findOne(id: string) {
-    return await this.courseRepository.findOne({ where: { id: id } });
+    const course = await this.courseRepository.findOne({ where: { id: id } });
+    if (!course) throw new NotFoundException('Course not found');
+    return course;
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course`;
+    try {
+      const course = await this.findOne(id);
+      for (const key in course) {
+        if (updateCourseDto[key]) {
+          course[key] = updateCourseDto[key];
+        }
+      }
+      return await this.courseRepository.save(course);
+    } catch {
+      throw new InternalServerErrorException('Failed to update course.');
+    }
   }
 
   async remove(id: string) {
@@ -43,7 +61,7 @@ export class CoursesService {
       where: { id: id },
       relations: ['enrollments', 'enrollments.student'],
     });
-    if(!course) throw new NotFoundException('course not found');
+    if (!course) throw new NotFoundException('course not found');
     return course.enrollments;
   }
 
@@ -52,11 +70,11 @@ export class CoursesService {
       where: { id: id },
       relations: ['quizzes'],
     });
-    if(!course) throw new NotFoundException('course not found');
+    if (!course) throw new NotFoundException('course not found');
     return course.quizzes;
   }
 
   async removeAllCoursesByUser(teacher: Teacher) {
-    return await this.courseRepository.delete({ teacher: teacher });
+    return await this.courseRepository.delete({ teacher: { id: teacher.id } });
   }
 }

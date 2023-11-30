@@ -1,4 +1,11 @@
-import { ConflictException, Inject, Injectable, InternalServerErrorException, NotFoundException, forwardRef } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Repository } from 'typeorm';
@@ -18,9 +25,8 @@ export class TasksService {
     @Inject(forwardRef(() => QuizzesService))
     private readonly quizService: QuizzesService,
   ) {}
-  
-  async create(createTaskDto: CreateTaskDto) {
 
+  async create(createTaskDto: CreateTaskDto) {
     try {
       const { quizId, studentId } = createTaskDto;
       const [quiz, student] = await Promise.all([
@@ -34,9 +40,11 @@ export class TasksService {
         throw new NotFoundException('Task or Student not found');
       }
     } catch (error) {
-      if(error.code === '23505'){
-        throw new ConflictException('The combination of quiz and student already exists.');
-      }else{
+      if (error.code === '23505') {
+        throw new ConflictException(
+          'The combination of quiz and student already exists.',
+        );
+      } else {
         throw new InternalServerErrorException('An unexpected error occurred.');
       }
     }
@@ -59,6 +67,6 @@ export class TasksService {
   }
 
   async removeAllTasksByUser(student: Student) {
-    return await this.taskRepository.delete({ student: student });
+    return await this.taskRepository.delete({ student: { id: student.id } });
   }
 }

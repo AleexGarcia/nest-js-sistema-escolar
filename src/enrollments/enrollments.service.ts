@@ -22,12 +22,12 @@ export class EnrollmentsService {
     private readonly enrollmentRepository: Repository<Enrollment>,
     @Inject(forwardRef(() => CoursesService))
     private readonly courseService: CoursesService,
-    @Inject(forwardRef(() => StudentsService) )
+    @Inject(forwardRef(() => StudentsService))
     private readonly studentService: StudentsService,
   ) {}
 
   async create(createEnrollmentDto: CreateEnrollmentDto) {
-    try{
+    try {
       const { courseId, studentId } = createEnrollmentDto;
       const [student, course] = await Promise.all([
         this.studentService.findOne(studentId),
@@ -39,10 +39,12 @@ export class EnrollmentsService {
       } else {
         throw new NotFoundException('student or course not found');
       }
-    }catch(err: any){
-      if(err.code === '23505'){
-        throw new ConflictException('The combination of student and course already exists.');
-      }else{
+    } catch (err: any) {
+      if (err.code === '23505') {
+        throw new ConflictException(
+          'The combination of student and course already exists.',
+        );
+      } else {
         throw new InternalServerErrorException('An unexpected error occurred.');
       }
     }
@@ -65,6 +67,6 @@ export class EnrollmentsService {
   }
 
   async removeAllEnrollmentByUser(student: Student) {
-    return this.enrollmentRepository.delete({ student: student });
+    return this.enrollmentRepository.delete({ student: { id: student.id } });
   }
 }
