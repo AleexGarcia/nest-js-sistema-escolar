@@ -53,13 +53,18 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const { role } = updateUserDto;
+    const { role, password } = updateUserDto;
     const user = await this.findOne(id);
     if (!user) throw new NotFoundException('User not found');
 
+    if (password !== undefined && password.trim() !== '') {
+      const hashedPassword = await this.hashPassword(password);
+      updateUserDto.password = hashedPassword;
+    }
+
     if (role === user.role) {
       for (const key in updateUserDto) {
-        if (updateUserDto[key]) {
+        if (updateUserDto[key] !== undefined) {
           user[key] = updateUserDto[key];
         }
       }
@@ -67,7 +72,10 @@ export class UsersService {
     } else {
       const userToUpdate = {} as UpdateUserDto;
       for (const key in user) {
-        if (updateUserDto[key] && user[key] != updateUserDto[key]) {
+        if (
+          updateUserDto[key] !== undefined &&
+          user[key] != updateUserDto[key]
+        ) {
           userToUpdate[key] = updateUserDto[key];
         } else {
           userToUpdate[key] = user[key];
@@ -136,6 +144,4 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, salt);
     return hashedPassword;
   }
-
-  
 }
