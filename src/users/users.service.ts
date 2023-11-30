@@ -80,6 +80,17 @@ export class UsersService {
     return await this.userRepository.delete(id);
   }
 
+  async findOneByEmail(email: string) {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { email: email },
+      });
+      return user;
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
+  }
+
   private async createUserWithRole(
     createUserDto: CreateUserDto,
   ): Promise<Admin | Student | Teacher> {

@@ -7,7 +7,6 @@ import { StudentsModule } from './students/students.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { AdminsModule } from './admins/admins.module';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
@@ -17,6 +16,6 @@ import { AdminsModule } from './admins/admins.module';
   ],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [StudentsModule, TeachersModule, AdminsModule],
+  exports: [StudentsModule, TeachersModule, AdminsModule, UsersService],
 })
 export class UsersModule {}

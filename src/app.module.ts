@@ -17,6 +17,7 @@ import { Student } from './users/students/entities/student.entity';
 import { EnrollmentsModule } from './enrollments/enrollments.module';
 import { Enrollment } from './enrollments/entities/enrollment.entity';
 import { SharedModule } from './shared/shared.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { SharedModule } from './shared/shared.module';
     QuizzesModule,
     QuestionsModule,
     EnrollmentsModule,
-    SharedModule
+    SharedModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
