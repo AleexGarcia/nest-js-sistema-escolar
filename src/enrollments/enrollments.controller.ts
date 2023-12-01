@@ -12,6 +12,12 @@ import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
+import { CheckPolicies } from 'src/shared/decorators/checkpolicies/checkpolicies.decorator';
+import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Actions } from 'src/casl/enum/action.enum';
+import { User } from 'src/users/entities/user.entity';
+import { Course } from 'src/courses/entities/course.entity';
+import { Enrollment } from './entities/enrollment.entity';
 
 @ApiTags('enrollments')
 @Controller('enrollments')
@@ -26,12 +32,14 @@ export class EnrollmentsController {
 
   @ApiOperation({ summary: 'Get all enrollments' })
   @Get()
+  @CheckPolicies((ability: AppAbility) => ability.can(Actions.Read, Enrollment))
   findAll() {
     return this.enrollmentsService.findAll();
   }
 
   @ApiOperation({ summary: 'Get details of a specific enrollment by ID' })
   @Get(':id')
+  @CheckPolicies((ability: AppAbility) => ability.can(Actions.Read, Enrollment))
   findOne(@Param() params: CommonGetIdDto) {
     const { id } = params;
     return this.enrollmentsService.findOne(id);
@@ -39,6 +47,7 @@ export class EnrollmentsController {
 
   @ApiOperation({ summary: 'Update details of a specific enrollment by ID' })
   @Patch(':id')
+  @CheckPolicies((ability: AppAbility) => ability.can(Actions.Update, Enrollment))
   update(
     @Param() params: CommonGetIdDto,
     @Body() updateEnrollmentDto: UpdateEnrollmentDto,
@@ -49,6 +58,7 @@ export class EnrollmentsController {
 
   @ApiOperation({ summary: 'Delete a specific enrollment by ID' })
   @Delete(':id')
+  @CheckPolicies((ability: AppAbility) => ability.can(Actions.Delete, Enrollment))
   remove(@Param() params: CommonGetIdDto) {
     const { id } = params;
     return this.enrollmentsService.remove(id);

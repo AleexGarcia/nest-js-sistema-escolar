@@ -18,6 +18,7 @@ import { EnrollmentsModule } from './enrollments/enrollments.module';
 import { Enrollment } from './enrollments/entities/enrollment.entity';
 import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { AuthModule } from './auth/auth.module';
     QuestionsModule,
     EnrollmentsModule,
     SharedModule,
-    AuthModule
+    AuthModule,
+    CaslModule
   ],
   controllers: [],
   providers: [],
