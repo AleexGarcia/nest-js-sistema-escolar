@@ -33,21 +33,39 @@ export class CaslAbilityFactory {
     );
     switch (user.role) {
       case 'Student':
-        can([Actions.Manage], Enrollment);
+        can(
+          [Actions.Read, Actions.Update, Actions.Delete, Actions.Create],
+          Enrollment,
+        );
         can([Actions.Read, Actions.Update], Task, { status: false });
         can([Actions.Read], Quiz);
-        cannot([Actions.Manage], Course);
+        cannot(
+          [Actions.Read, Actions.Update, Actions.Delete, Actions.Create],
+          Course,
+        );
         break;
       case 'Teacher':
         can(Actions.Read, Course);
         can(Actions.Read, Enrollment);
-        can(Actions.Manage, Quiz);
-        can(Actions.Manage, Question);
+        can(
+          [Actions.Read, Actions.Update, Actions.Delete, Actions.Create],
+          Quiz,
+        );
+        can(
+          [Actions.Read, Actions.Update, Actions.Delete, Actions.Create],
+          Question,
+        );
         can([Actions.Create, Actions.Update, Actions.Delete], Task);
         break;
       case 'Admin':
-        can(Actions.Manage, User);
-        can(Actions.Manage, Course);
+        can(
+          [Actions.Read, Actions.Update, Actions.Delete, Actions.Create],
+          User,
+        );
+        can(
+          [Actions.Read, Actions.Update, Actions.Delete, Actions.Create],
+          Course,
+        );
         break;
     }
     return build({
