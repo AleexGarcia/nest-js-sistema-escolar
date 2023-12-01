@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
 import { CheckPolicies } from 'src/shared/decorators/checkpolicies/checkpolicies.decorator';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
@@ -11,6 +11,7 @@ import { Task } from './entities/task.entity';
 
 @ApiTags('tasks')
 @Controller('tasks')
+@ApiBearerAuth()
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 

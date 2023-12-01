@@ -10,7 +10,7 @@ import {
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
 import { CheckPolicies } from 'src/shared/decorators/checkpolicies/checkpolicies.decorator';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
@@ -19,6 +19,7 @@ import { Question } from './entities/question.entity';
 
 @ApiTags('questions')
 @Controller('questions')
+@ApiBearerAuth()
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
   @ApiOperation({ summary: 'Create a new question.' })

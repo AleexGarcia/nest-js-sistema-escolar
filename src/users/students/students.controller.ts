@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { StudentsService } from './students.service';
 
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
 import { CheckPolicies } from 'src/shared/decorators/checkpolicies/checkpolicies.decorator';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
@@ -12,6 +12,7 @@ import { Task } from 'src/tasks/entities/task.entity';
 
 @ApiTags('students')
 @Controller('students')
+@ApiBearerAuth()
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 

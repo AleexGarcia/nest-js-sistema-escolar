@@ -10,15 +10,14 @@ import {
 import { EnrollmentsService } from './enrollments.service';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
 import { CheckPolicies } from 'src/shared/decorators/checkpolicies/checkpolicies.decorator';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { Actions } from 'src/casl/enum/action.enum';
-import { User } from 'src/users/entities/user.entity';
-import { Course } from 'src/courses/entities/course.entity';
 import { Enrollment } from './entities/enrollment.entity';
 
+@ApiBearerAuth()
 @ApiTags('enrollments')
 @Controller('enrollments')
 export class EnrollmentsController {

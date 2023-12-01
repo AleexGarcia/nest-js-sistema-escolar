@@ -10,7 +10,7 @@ import {
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
 import { CheckPolicies } from 'src/shared/decorators/checkpolicies/checkpolicies.decorator';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
@@ -19,6 +19,7 @@ import { Course } from './entities/course.entity';
 
 @ApiTags('courses')
 @Controller('courses')
+@ApiBearerAuth()
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 

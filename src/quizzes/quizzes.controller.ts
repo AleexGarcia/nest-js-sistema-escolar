@@ -10,7 +10,7 @@ import {
 import { QuizzesService } from './quizzes.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonGetIdDto } from 'src/shared/dto/common-get-id.dto';
 import { CheckPolicies } from 'src/shared/decorators/checkpolicies/checkpolicies.decorator';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
@@ -19,6 +19,7 @@ import { Quiz } from './entities/quiz.entity';
 
 @ApiTags('quizzes')
 @Controller('quizzes')
+@ApiBearerAuth()
 export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) {}
   @ApiOperation({ summary: 'Create a new quiz.' })

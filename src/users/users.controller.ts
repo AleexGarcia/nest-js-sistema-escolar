@@ -18,9 +18,9 @@ import { Actions } from 'src/casl/enum/action.enum';
 import { User } from './entities/user.entity';
 import { Public } from 'src/shared/decorators/public/public.decorator';
 
-@ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
+
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
  
@@ -30,14 +30,14 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
-
+  @ApiBearerAuth()
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Actions.Read, User))
   @ApiOperation({ summary: 'Get a list of all users.' })
   findAll() {
     return this.usersService.findAll();
   }
-
+  @ApiBearerAuth()
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Actions.Read, User))
   @ApiOperation({ summary: 'Get details of a specific user by ID.' })
@@ -45,7 +45,7 @@ export class UsersController {
     const { id } = params;
     return this.usersService.findOne(id);
   }
-
+  @ApiBearerAuth()
   @Patch(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Actions.Update, User))
   @ApiOperation({ summary: 'Update details of a specific user by ID.' })
@@ -56,7 +56,7 @@ export class UsersController {
     const { id } = params;
     return this.usersService.update(id, updateUserDto);
   }
-
+  @ApiBearerAuth()
   @Delete(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Actions.Delete, User))
   @ApiOperation({ summary: 'Delete a specific user by ID.' })
