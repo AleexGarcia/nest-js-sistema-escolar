@@ -17,7 +17,7 @@ import { Teacher } from './teachers/entities/teacher.entity';
 import { Admin } from './admins/entities/admin.entity';
 import { UserRole } from './enum/user-roles.enum';
 import * as bcrypt from 'bcrypt';
-import { Public } from 'src/shared/decorators/public/public.decorator';
+
 
 @Injectable()
 export class UsersService {
