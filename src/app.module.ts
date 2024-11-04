@@ -27,7 +27,7 @@ import { CaslModule } from './casl/casl.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: '123',
+      password: '102030',
       database: 'db_sistema_escolar',
       entities: [User,Task,Student,Teacher,Admin,Quiz,Course, Question, Enrollment],
       synchronize: true,
